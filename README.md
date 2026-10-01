@@ -1,5 +1,7 @@
 # 大肥鱼离线桌宠 · Coopanion Offline
 
+由 Codex 协助改造，并参考 [BongoCat](https://github.com/vladelaina/BongoCat) 的交互与轻量化思路。
+
 Windows x64 离线桌宠，基于 [Pal-AI-Lab/Coopanion](https://github.com/Pal-AI-Lab/Coopanion) 改造。
 无需账号、API Key、模型下载或联网服务；解压便携包即可使用。
 
