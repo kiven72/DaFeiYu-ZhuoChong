@@ -1,0 +1,268 @@
+:root{
+  --bg:#F3F2F6; --surface:#FFFFFF; --text:#1B1626; --muted:#6A6577; --line:#E2DFE8;
+  --accent:#00A870;
+  --skin-ink:#1B1626; --skin-eye:#00A870;
+  --wall:#E8E6EE; --dot:#CFCBD9; --shadow:rgba(27,22,38,.12);
+  --blush:#FF8FA8; --tear:#5AAEF0; --anger:#E5484D; --heart:#F0567A; --dust:#A39DB0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0D1117; --surface:#151A22; --text:#E9EDF2; --muted:#8C95A3; --line:#252C37;
+    --accent:#2FD59B;
+    --skin-ink:#FFFFFF; --skin-eye:#2FD59B;
+    --wall:#10151C; --dot:#232B37; --shadow:rgba(0,0,0,.32);
+    --blush:#FF7F9E; --tear:#6BBDF7; --anger:#FF6369; --heart:#FF6F93; --dust:#5B6472;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0D1117; --surface:#151A22; --text:#E9EDF2; --muted:#8C95A3; --line:#252C37;
+  --accent:#2FD59B;
+  --skin-ink:#FFFFFF; --skin-eye:#2FD59B;
+  --wall:#10151C; --dot:#232B37; --shadow:rgba(0,0,0,.32);
+  --blush:#FF7F9E; --tear:#6BBDF7; --anger:#FF6369; --heart:#FF6F93; --dust:#5B6472;
+}
+*{box-sizing:border-box}
+html,body{margin:0; height:100%; overflow:hidden}
+body{
+  font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  font-size:15px; line-height:1.55; color:var(--text);
+  user-select:none; -webkit-user-select:none;
+}
+/* in a browser tab the page draws its own wall and floor; in the pet window it is transparent */
+body.tab{
+  background-color:var(--wall);
+  background-image:radial-gradient(var(--dot) 1.2px, transparent 1.3px);
+  background-size:22px 22px;
+}
+body.tab .floor{position:fixed; left:0; right:0; bottom:0; height:48px; background:var(--surface); border-top:1px solid var(--line)}
+body.desk{background:transparent}
+body.desk .floor{display:none}
+.stage{position:fixed; inset:0; touch-action:none}
+.stage svg{position:absolute; inset:0; width:100%; height:100%; display:block; overflow:visible}
+
+/* figure classes */
+.ink{stroke:var(--skin-ink)} .inkf{fill:var(--skin-ink)} .eye{stroke:var(--skin-eye)}
+.blush{fill:var(--blush)} .tearf{fill:var(--tear)} .angry{stroke:var(--anger)}
+.p-heart{stroke:var(--heart)} .p-dust{stroke:var(--dust)} .shadow{fill:var(--shadow)}
+.c-head-main{stroke:var(--c-head-main, var(--skin-ink))} .c-head-acc{stroke:var(--c-head-acc, var(--skin-eye))}
+.c-glasses-main{stroke:var(--c-glasses-main, var(--skin-ink))} .c-glasses-acc{stroke:var(--c-glasses-acc, var(--skin-eye))}
+.c-side-main{stroke:var(--c-side-main, var(--skin-eye))} .c-side-acc{stroke:var(--c-side-acc, var(--skin-eye))}
+.c-neck-main{stroke:var(--c-neck-main, var(--skin-eye))} .c-neck-acc{stroke:var(--c-neck-acc, var(--skin-eye))}
+.f-head-main{fill:var(--c-head-main, var(--skin-ink))} .f-head-acc{fill:var(--c-head-acc, var(--skin-eye))}
+.f-side-main{fill:var(--c-side-main, var(--skin-eye))} .f-side-acc{fill:var(--c-side-acc, var(--skin-eye))}
+.f-neck-main{fill:var(--c-neck-main, var(--skin-eye))} .f-neck-acc{fill:var(--c-neck-acc, var(--skin-eye))}
+
+/* bubbles */
+.bubble{
+  position:fixed; left:0; top:0; z-index:3; width:max-content; max-width:min(300px, calc(100vw - 20px));
+  padding:10px 14px; border-radius:18px; background:var(--surface); color:var(--text);
+  border:2.5px solid var(--skin-ink); box-shadow:0 8px 22px var(--shadow);
+  font-size:14.5px; line-height:1.55; user-select:text; -webkit-user-select:text;
+  transform-origin:var(--tail, 50%) calc(100% + 10px);
+}
+.bubble::after{
+  content:""; position:absolute; left:calc(var(--tail, 50%) - 7px); bottom:-8.5px; width:12px; height:12px;
+  background:var(--surface); border-right:2.5px solid var(--skin-ink); border-bottom:2.5px solid var(--skin-ink);
+  border-bottom-right-radius:4px; transform:rotate(45deg);
+}
+.bubble.heard{border-style:dashed; box-shadow:none; max-width:min(260px, calc(100vw - 20px))}
+.bubble.heard::after{display:none}
+.bubble.ask{min-width:min(236px, calc(100vw - 20px)); padding-right:32px}
+.bubble.pop{animation:bubble-in .26s cubic-bezier(.3,1.5,.5,1)}
+@keyframes bubble-in{from{transform:scale(.5); opacity:0}}
+.b-text{margin:0; min-height:1.55em; white-space:pre-wrap; text-wrap:pretty}
+.b-text .interim{color:var(--muted)}
+.caret{display:inline-block; width:2px; height:1.05em; margin-left:2px; vertical-align:-2px; background:var(--skin-eye); animation:caret 1s steps(1) infinite}
+@keyframes caret{50%{opacity:0}}
+.b-hint{display:block; margin-top:2px; font-size:12px; color:var(--muted)}
+.b-close{position:absolute; top:5px; right:6px; width:24px; height:24px; padding:0; border:0; border-radius:50%; background:none; color:var(--muted); font-size:18px; line-height:1; cursor:pointer}
+.b-close:hover{color:var(--text)}
+.b-opts{display:flex; flex-direction:column; gap:6px; margin:10px -18px 2px 0}
+.b-opt, .b-own{animation:opt-in .24s cubic-bezier(.3,1.4,.5,1) both; transition:border-color .15s, opacity .2s}
+@keyframes opt-in{from{transform:translateY(6px) scale(.92); opacity:0}}
+.b-opt{
+  display:flex; align-items:center; gap:8px; width:100%; text-align:left; font:inherit; font-size:14px;
+  padding:6px 10px; border-radius:11px; border:1.5px solid var(--line); background:var(--bg); color:var(--text); cursor:pointer;
+}
+.b-opt:hover, .b-opt.chosen{border-color:var(--skin-eye)}
+.b-opt kbd{
+  flex:none; display:grid; place-items:center; width:20px; height:20px; border-radius:50%;
+  border:2px solid var(--skin-eye); font:500 11px/1 ui-monospace,Consolas,monospace; color:var(--text);
+}
+.b-own{display:flex; align-items:center; gap:6px; padding:3px 3px 3px 10px; border-radius:11px; border:1.5px dashed var(--line); background:var(--bg)}
+.b-own:focus-within, .b-own.chosen{border-style:solid; border-color:var(--skin-eye)}
+.b-own input{flex:1; min-width:0; border:0; background:transparent; font:inherit; font-size:14px; color:var(--text); outline:none; padding:4px 0}
+.b-own button{flex:none; font:inherit; font-size:12.5px; padding:4px 10px; border-radius:8px; border:0; background:var(--text); color:var(--surface); cursor:pointer}
+.b-opt.dim, .b-own.dim{opacity:.35}
+/* an app's conversation: one step per bubble, with the answer's controls under Coo's line */
+.d-mark{color:var(--skin-eye); font-weight:700}
+.bubble.talk{width:min(318px, calc(100vw - 20px)); max-width:none; padding:11px 14px 12px}
+.d-top{display:flex; align-items:center; min-height:14px; margin:-2px 22px 5px 0}
+.bubble.talk .b-close{top:4px; right:5px}
+.d-dots{display:flex; gap:4px}
+.d-dots i{width:6px; height:6px; border-radius:3px; background:var(--line); transition:width .25s, background .25s}
+.d-dots i.past{background:color-mix(in srgb, var(--skin-eye) 45%, var(--line))}
+.d-dots i.on{width:16px; background:var(--skin-eye)}
+.d-body{display:flex; flex-direction:column; gap:8px; margin-top:10px}
+.d-body > *{animation:opt-in .24s cubic-bezier(.3,1.4,.5,1) both}
+.d-body button, .d-body input{font:inherit}
+.d-row{display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px}
+.d-pill{
+  padding:5px 14px; border-radius:999px; border:1.5px solid var(--line); background:var(--bg); color:var(--text);
+  font-size:13.5px; cursor:pointer; transition:border-color .15s, background .15s, transform .15s;
+}
+.d-pill:hover{border-color:var(--skin-ink)}
+.d-pill.primary{background:var(--skin-ink); border-color:var(--skin-ink); color:var(--surface); font-weight:600}
+.d-pill.primary:hover{background:var(--skin-eye); border-color:var(--skin-eye)}
+.d-pill.chosen{animation:pill-pick .26s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pill-pick{45%{transform:scale(1.1)}}
+.d-body button:disabled{cursor:default}
+/* the talk key as a key cap that keeps being pressed */
+.d-keys{display:flex; justify-content:center; padding:4px 0 2px}
+.d-key{
+  display:inline-block; padding:5px 16px 4px; border-radius:10px; border:2px solid var(--skin-ink); border-bottom-width:5px;
+  background:var(--surface); color:var(--text); font:600 14px/1.3 ui-monospace,Consolas,"Microsoft YaHei",monospace;
+  animation:key-press 1.8s ease-in-out infinite;
+}
+@keyframes key-press{0%,35%,100%{transform:none; border-bottom-width:5px} 45%,80%{transform:translateY(3px); border-bottom-width:2px; border-color:var(--skin-eye); color:var(--skin-eye)}}
+/* tapped, then held: a quick press, a quick release, and a long press lit in the eye color */
+.d-key.taps{animation:key-taphold 2.2s ease-in-out infinite}
+@keyframes key-taphold{
+  0%,20%,100%{transform:none; border-bottom-width:5px}
+  24%,28%{transform:translateY(3px); border-bottom-width:2px}
+  32%,36%{transform:none; border-bottom-width:5px}
+  40%,82%{transform:translateY(3px); border-bottom-width:2px; border-color:var(--skin-eye); color:var(--skin-eye)}
+  86%{transform:none; border-bottom-width:5px}
+}
+.d-keys{align-items:center; gap:6px}
+.d-taps{font:700 12px/1 ui-monospace,Consolas,monospace; color:var(--muted)}
+/* choice cards: the picked one lit in the eye color */
+.d-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(80px, 1fr)); gap:6px}
+.d-card{
+  position:relative; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 4px 8px; border-radius:14px;
+  border:1.5px solid var(--line); background:var(--bg); color:var(--text); cursor:pointer;
+  animation:opt-in .24s cubic-bezier(.3,1.4,.5,1) both; transition:border-color .15s, background .15s, transform .15s, color .15s;
+}
+.d-card:hover{transform:translateY(-2px); border-color:var(--skin-ink)}
+.d-card.on{border-color:var(--skin-eye); background:color-mix(in srgb, var(--skin-eye) 14%, var(--bg)); color:var(--skin-eye)}
+.d-cardic svg{width:24px; height:24px; display:block}
+.d-cardimg{width:28px; height:28px; display:block; padding:3px; border-radius:7px; background:#fff; box-sizing:border-box}
+.d-card.on .d-cardimg{animation:card-bob .5s cubic-bezier(.3,1.5,.5,1)}
+.d-cardlbl{font-size:13px; color:var(--text)}
+.d-level{
+  position:absolute; top:-7px; right:-5px; min-width:18px; padding:0 4px; border-radius:7px; border:1.5px solid var(--surface);
+  background:var(--muted); color:var(--surface); font:700 10px/15px system-ui,sans-serif;
+}
+.d-card.on .d-level{background:var(--skin-eye)}
+.d-card.on .d-cardic{animation:card-bob .5s cubic-bezier(.3,1.5,.5,1)}
+@keyframes card-bob{40%{transform:translateY(-4px) rotate(-8deg)}}
+/* a text box with its send button; a secret one can be peeked at */
+.d-field{display:flex; align-items:center; gap:4px; padding:3px 3px 3px 11px; border-radius:12px; border:1.5px solid var(--line); background:var(--bg)}
+.d-field:focus-within{border-color:var(--skin-eye)}
+.d-field input{flex:1; min-width:0; border:0; background:transparent; font-size:14px; color:var(--text); outline:none; padding:5px 0; user-select:text; -webkit-user-select:text}
+.d-field .d-peek{flex:none; display:grid; place-items:center; width:26px; height:26px; padding:0; border:0; border-radius:50%; background:none; color:var(--muted); cursor:pointer}
+.d-field .d-peek:hover{color:var(--text)}
+.d-field .d-peek svg{width:16px; height:16px}
+.d-send{flex:none; padding:5px 12px; border-radius:9px; border:0; background:var(--skin-ink); color:var(--surface); font-size:13px; font-weight:600; cursor:pointer}
+.d-send:hover{background:var(--skin-eye)}
+.d-field.shake{animation:field-shake .32s}
+@keyframes field-shake{20%,60%{transform:translateX(-4px)} 40%,80%{transform:translateX(4px)}}
+.d-links{display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:12.5px}
+.d-link{display:inline-flex; align-items:center; gap:3px; color:var(--skin-eye); text-decoration:none}
+.d-link:hover{text-decoration:underline}
+.d-link svg{width:12px; height:12px}
+.d-alt{margin-left:auto; padding:2px 4px; border:0; background:none; color:var(--muted); font-size:12.5px; cursor:pointer}
+.d-alt:hover{color:var(--text); text-decoration:underline}
+/* a progress bar; without a fraction a band slides along it */
+.d-bar{position:relative; height:8px; border-radius:4px; background:var(--line); overflow:hidden}
+.d-bar i{position:absolute; left:0; top:0; bottom:0; width:0; border-radius:4px; background:linear-gradient(90deg, var(--skin-eye), color-mix(in srgb, var(--skin-eye) 55%, #4CC9F0)); transition:width .4s ease}
+.d-bar.wait i{width:35%; animation:bar-slide 1.2s ease-in-out infinite}
+@keyframes bar-slide{from{left:-35%} to{left:100%}}
+.d-barlbl{display:flex; justify-content:space-between; gap:8px; font-size:12px; color:var(--muted)}
+.d-barlbl b{font-weight:600; font-variant-numeric:tabular-nums; color:var(--text)}
+.trail{position:fixed; inset:0; pointer-events:none; z-index:3}
+.trail i{position:absolute; border-radius:50%; border:2.5px solid var(--skin-ink); background:var(--surface); animation:trail-bob 1.2s ease-in-out infinite}
+.trail i:nth-child(2){animation-delay:.15s}
+.trail i:nth-child(3){animation-delay:.3s}
+@keyframes trail-bob{50%{transform:translateY(-3px)}}
+
+/* context menu: the bot and its run controls on top, the actions as icon tiles below */
+.menu{
+  position:fixed; z-index:5; width:max-content; padding:6px; border-radius:16px;
+  background:var(--surface); border:2px solid var(--skin-ink); box-shadow:0 10px 26px var(--shadow);
+  font-size:14px; animation:bubble-in .18s cubic-bezier(.3,1.5,.5,1);
+}
+.menu button{font:inherit; cursor:pointer}
+.menu .m-head{display:flex; align-items:center; gap:8px; min-height:40px; padding:3px 2px 7px 4px; margin-bottom:4px; border-bottom:1px solid var(--line)}
+.m-avatar{flex:none; width:30px; height:30px; border-radius:50%; overflow:hidden; background:var(--bg); border:1.5px solid var(--line)}
+.m-avatar img, .m-avatar svg{width:100%; height:100%; display:block; object-fit:cover}
+.m-name{flex:1; min-width:0; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.m-acts{flex:none; display:flex; gap:2px}
+/* asking to quit: the prompt takes the avatar's room, so the fixed-width menu keeps it readable */
+.m-head.confirm .m-avatar{display:none}
+.menu .m-act{display:grid; place-items:center; width:30px; height:30px; padding:0; border:0; border-radius:50%; background:none; color:var(--muted)}
+.menu .m-act:hover{background:var(--bg); color:var(--text)}
+.menu .m-act svg{width:17px; height:17px; display:block}
+/* running: the pause button in the accent color, as the console's rail shows the live run */
+.menu .m-act.run:not(.paused){color:var(--skin-eye)}
+.menu .m-act.power:hover, .menu .m-act.danger{color:var(--anger)}
+.menu .m-act.text{width:auto; padding:0 10px; border-radius:15px; font-size:12.5px}
+.m-grid{display:grid; grid-template-columns:repeat(4, 40px); gap:6px; padding:2px}
+/* every entry is a round icon button; a switch that is on is lit in the eye color, one that is off keeps its crossed-out icon on a dashed ring */
+.m-tile{
+  position:relative; display:grid; place-items:center; width:40px; height:40px; padding:0; border-radius:50%;
+  border:1.5px solid var(--line); background:none; color:var(--text); transition:background .15s, border-color .15s, color .15s;
+}
+.m-tile:hover, .m-tile:focus-visible{background:var(--bg); border-color:var(--skin-ink); outline:none}
+.m-tile .ic{position:relative; display:grid; place-items:center}
+.m-tile .ic svg{width:19px; height:19px; display:block}
+.m-tile.on{background:color-mix(in srgb, var(--skin-eye) 16%, transparent); border-color:var(--skin-eye); color:var(--skin-eye)}
+.m-tile.off{color:var(--muted); border-style:dashed}
+.badge{
+  position:absolute; right:-9px; bottom:-8px; padding:0 3px; border-radius:6px; border:1.5px solid var(--surface);
+  background:var(--skin-eye); color:var(--surface); font:700 8.5px/12px ui-monospace,Consolas,monospace; letter-spacing:.02em; text-transform:uppercase;
+}
+/* dressing up: on hover the shirt wiggles through the palettes and three dots of color pop out */
+.m-tile.dress:hover, .tool[data-action="dress"]:hover{animation:dress-hue 1.6s linear infinite}
+.m-tile.dress:hover .ic, .tool[data-action="dress"]:hover .ic{animation:dress-wiggle .5s ease-in-out}
+.m-tile.dress::before, .m-tile.dress::after, .m-tile.dress .ic::before{
+  content:""; position:absolute; width:6px; height:6px; border-radius:50%; opacity:0; pointer-events:none;
+}
+.m-tile.dress::before{left:-2px; top:4px; background:#FF6B8B}
+.m-tile.dress::after{right:-3px; top:0; background:#FFC43D}
+.m-tile.dress .ic::before{left:6px; top:-17px; background:#4CC9F0}
+.m-tile.dress:hover::before{animation:dress-pop .7s ease-out infinite}
+.m-tile.dress:hover::after{animation:dress-pop .7s .23s ease-out infinite}
+.m-tile.dress:hover .ic::before{animation:dress-pop .7s .46s ease-out infinite}
+@keyframes dress-hue{
+  0%{color:#FF6B8B; border-color:#FF6B8B} 20%{color:#FF9F43; border-color:#FF9F43} 40%{color:#FFC43D; border-color:#FFC43D}
+  60%{color:#2FD59B; border-color:#2FD59B} 80%{color:#4CC9F0; border-color:#4CC9F0} 100%{color:#B388FF; border-color:#B388FF}
+}
+@keyframes dress-wiggle{25%{transform:rotate(-12deg)} 75%{transform:rotate(12deg)}}
+@keyframes dress-pop{0%{opacity:0; transform:scale(.3) translate(0, 0)} 30%{opacity:1} 100%{opacity:0; transform:scale(1.1) translate(0, -8px)}}
+/* hover buttons: the actions chosen in settings, in columns of up to three beside the pet */
+.tools{position:fixed; left:0; top:0; z-index:4; display:grid; grid-auto-flow:column; gap:8px; animation:bubble-in .18s cubic-bezier(.3,1.5,.5,1)}
+.tools[hidden]{display:none}
+.tool{
+  position:relative; display:grid; place-items:center; width:34px; height:34px; padding:0; border-radius:50%; cursor:pointer;
+  background:var(--surface); color:var(--text); border:2px solid var(--skin-ink); box-shadow:0 6px 16px var(--shadow);
+}
+.tool .ic{position:relative; display:grid; place-items:center}
+.tool:hover{color:var(--skin-eye); border-color:var(--skin-eye)}
+.tool svg{width:18px; height:18px; display:block}
+.tool .badge{right:-12px; bottom:-10px}
+/* the voice switch: struck through when off, faded while the recognizer is not ready, lit while hearing */
+.tool.off{color:var(--muted)}
+.tool.waiting svg{opacity:.45}
+.tool.live{color:var(--skin-eye); border-color:var(--skin-eye)}
+/* held down: a ring closes in; when it is full the sentence is sent */
+.tool.holding::after{
+  content:""; position:absolute; inset:-7px; border-radius:50%; border:2.5px solid var(--skin-eye); pointer-events:none;
+  animation:hold-ring var(--hold, .5s) linear forwards;
+}
+@keyframes hold-ring{from{transform:scale(.72); opacity:0} to{transform:scale(1); opacity:1}}
+.tool.sent{animation:tool-sent .36s cubic-bezier(.3,1.5,.5,1)}
+@keyframes tool-sent{45%{transform:scale(1.2)}}
+@media (prefers-reduced-motion: reduce){.bubble.pop, .b-opt, .b-own, .d-body > *, .d-card, .d-key, .d-key.taps, .d-bar.wait i, .d-card.on .d-cardic, .d-field.shake, .d-pill.chosen, .trail i, .caret, .menu, .tools, .tool.holding::after, .tool.sent, .m-tile, .m-tile::before, .m-tile::after, .m-tile .ic, .m-tile .ic::before{animation:none}}

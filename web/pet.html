@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coopanion 离线桌宠</title>
+<link rel="stylesheet" href="/web/pet.css">
+<link rel="stylesheet" href="/web/offline.css">
+</head>
+<body>
+<div class="floor" aria-hidden="true"></div>
+<div class="stage" id="stage">
+  <svg id="stageSvg" aria-hidden="true">
+    <defs>
+      <!-- a soft light gray glow behind the body, for backdrops of the body's own color -->
+      <filter id="halo" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+        <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="grown"/>
+        <feGaussianBlur in="grown" stdDeviation="7" result="soft"/>
+        <feFlood id="haloFlood" flood-color="#B8B8B8" flood-opacity="0"/>
+        <feComposite in2="soft" operator="in" result="glow"/>
+        <feMerge><feMergeNode in="glow"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <ellipse id="shadow" class="shadow" cx="0" cy="0" rx="0" ry="0"/>
+    <g id="pet"></g>
+    <g id="fx"></g>
+  </svg>
+</div>
+<div class="trail" id="trail" hidden aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="bubble heard" id="heard" role="status" aria-live="polite" hidden></div>
+<div class="bubble" id="bubble" role="status" aria-live="polite" hidden></div>
+<div class="menu" id="menu" role="menu" hidden></div>
+<div class="tools" id="tools" hidden></div>
+<script type="module" src="/web/offline-pet.js"></script>
+</body>
+</html>

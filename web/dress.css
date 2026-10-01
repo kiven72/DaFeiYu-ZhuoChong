@@ -1,0 +1,69 @@
+html:has(body.dress-page){overflow:auto; height:auto}
+body.dress-page{
+  overflow:visible; height:auto; min-height:100%; background:var(--bg); color:var(--text);
+  user-select:auto; -webkit-user-select:auto; padding:16px;
+}
+/* The host console chooses the editor surface; the pet's own dark/light setting still chooses its colors. */
+:root[data-ui-theme="light"] body.dress-page{
+  color-scheme:light;
+  --bg:#F3F2F6; --surface:#FFFFFF; --text:#1B1626; --muted:#6A6577; --line:#E2DFE8; --accent:#00A870;
+}
+:root[data-ui-theme="dark"] body.dress-page{
+  color-scheme:dark;
+  --bg:#0D1117; --surface:#151A22; --text:#E9EDF2; --muted:#8C95A3; --line:#252C37; --accent:#2FD59B;
+}
+.dress-page main{--swatch-bg:#E8E6EE}
+:root[data-theme="dark"] .dress-page main{--swatch-bg:#10151C}
+.dress-page main{max-width:980px; margin:0 auto; display:grid; grid-template-columns:minmax(220px, 300px) 1fr; gap:20px; align-items:start}
+.preview{
+  position:sticky; top:16px; height:280px; border-radius:14px; overflow:hidden; border:1px solid var(--line);
+  background-color:var(--wall); background-image:radial-gradient(var(--dot) 1.2px, transparent 1.3px); background-size:22px 22px;
+}
+:root[data-theme="light"] .preview{--wall:#E8E6EE; --dot:#CFCBD9}
+:root[data-theme="dark"] .preview{--wall:#10151C; --dot:#232B37}
+:root[data-theme="light"] .preview .saved{color:#6A6577}
+:root[data-theme="dark"] .preview .saved{color:#8C95A3}
+.preview svg{position:absolute; inset:0; width:100%; height:100%}
+.preview .mode{position:absolute; top:10px; right:10px}
+.preview .saved{position:absolute; left:12px; bottom:8px; margin:0; font-size:12.5px; color:var(--muted)}
+.dress{display:grid; grid-template-columns:4.5em 1fr; gap:12px 14px; align-items:start}
+.dress .row-label{font-size:14px; color:var(--muted); padding-top:18px}
+.opts{display:flex; flex-wrap:wrap; gap:8px}
+.opt{
+  font:inherit; cursor:pointer; width:72px; display:flex; flex-direction:column; align-items:center; gap:2px;
+  padding:8px 4px 6px; border-radius:10px; border:1px solid var(--line); background:var(--surface); color:var(--text);
+  transition:border-color .15s, background-color .15s;
+}
+.opt:hover{border-color:var(--accent)}
+.opt[aria-pressed="true"]{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, var(--surface))}
+.opt svg{width:52px; height:52px; display:block; background:var(--swatch-bg); border-radius:6px}
+.opt span{font-size:12.5px}
+.swatch svg{--skin-ink:var(--sl-ink); --skin-eye:var(--sl-eye)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .swatch svg{--skin-ink:var(--sd-ink); --skin-eye:var(--sd-eye)}}
+:root[data-theme="dark"] .swatch svg{--skin-ink:var(--sd-ink); --skin-eye:var(--sd-eye)}
+.slot{display:flex; flex-direction:column; gap:10px; min-width:0}
+.cmap{display:flex; flex-wrap:wrap; gap:8px 22px; align-items:center}
+.cm-group{display:flex; flex-wrap:wrap; align-items:center; gap:6px}
+.cm-label{font-size:12.5px; color:var(--muted); margin-right:2px}
+.dot{--dot-c:var(--dl); width:22px; height:22px; border-radius:50%; padding:0; cursor:pointer; border:0; background:var(--dot-c); box-shadow:0 0 0 1px var(--line)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .dot{--dot-c:var(--dd)}}
+:root[data-theme="dark"] .dot{--dot-c:var(--dd)}
+.dot.linked{background:transparent; border:5px solid var(--skin-ink); box-shadow:none}
+.dot.linked.eye{border-color:var(--skin-eye)}
+.dot[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg), 0 0 0 4px var(--text)}
+button:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+/* Coo's palette and accessories, or the whale's colour schemes, whichever body is chosen */
+.dress[data-figure="whale"] .coo-only, .dress:not([data-figure="whale"]) .whale-only{display:none}
+.opt img{width:52px; height:52px; display:block; background:var(--swatch-bg); border-radius:6px; object-fit:cover}
+.opt.wide{width:92px}
+.opt.wide span{font-size:11.5px; text-align:center; line-height:1.25}
+.opt.figure{width:116px}
+.opt.figure span{font-size:12.5px; white-space:nowrap}
+@media (max-width:640px){
+  .dress-page main{grid-template-columns:1fr}
+  .preview{position:relative; top:0; height:220px}
+  .dress{grid-template-columns:1fr; gap:6px}
+  .dress .row-label{padding-top:6px}
+  .opt{width:64px}
+  .opt svg, .opt img{width:46px; height:46px}
+}

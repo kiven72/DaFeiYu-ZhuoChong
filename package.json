@@ -1,0 +1,26 @@
+{
+  "name": "coopanion-offline",
+  "productName": "大肥鱼离线桌宠",
+  "version": "0.1.9",
+  "description": "Offline desktop pet; no AI, accounts or network services",
+  "main": "main.cjs",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "start": "electron .",
+    "start:compatible": "electron . --compatible",
+    "verify": "node scripts/verify.cjs",
+    "benchmark": "node scripts/verify.cjs --benchmark",
+    "verify:startup": "node scripts/verify.cjs --startup-test",
+    "check": "node scripts/check-project.cjs",
+    "build": "node scripts/build.mjs",
+    "zip": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/zip.ps1"
+  },
+  "devDependencies": {
+    "electron": "44.5.1",
+    "rcedit": "5.0.2"
+  }
+}

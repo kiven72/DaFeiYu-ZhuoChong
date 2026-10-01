@@ -1,0 +1,16 @@
+node_modules/
+dist/
+data/
+test-data/
+.cache/
+*.log
+*.zip
+*.exe
+*.dll
+*.lnk
+*.tmp
+.DS_Store
+Thumbs.db
+desktop.ini
+.env
+.env.*
